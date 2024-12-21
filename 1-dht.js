@@ -65,18 +65,17 @@ node.addEventListener('peer:discovery', (evt) => {
   // get the multiaddr of peerInfo
   let bootPeer = peerInfo.multiaddrs[0].toString();
   const checkIfBootstrapper = bootstrappers.includes(bootPeer);
-  if (checkIfBootstrapper) {
-    console.log('Discovered bootstrapper:', bootPeer);
-    return;
-  }
 
-  console.log('Discovered peer:', discoveredPeerId)
-  let ma = peerInfo.multiaddrs[1].toString();
-  console.log('Connecting to discovered peer:', ma);
   
-  if (!ma.includes('p2p')) {
-    ma = ma + '/p2p/' + peerInfo.id.toString();
-    console.log('Connecting to discovered peer:', ma);
-    node.dial(multiaddr(ma))
+
+  if (!checkIfBootstrapper) {
+    console.log('Discovered peer id:', discoveredPeerId)
+    console.log('Discovered peer multiaddrs:', peerInfo.multiaddrs)
+    let ma = peerInfo.multiaddrs[1].toString();
+    if (!ma.includes('p2p')) {
+      ma = ma + '/p2p/' + peerInfo.id.toString();
+      console.log('Connecting to discovered peer:', ma);
+      node.dial(multiaddr(ma))
+    }
   }
 })
